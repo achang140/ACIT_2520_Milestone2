@@ -2,14 +2,17 @@ const express = require("express");
 const ejsLayouts = require("express-ejs-layouts");
 const session = require("express-session");
 const path = require("path");
-
+const FileStore = require('session-file-store')(session);
 
 const app = express();
+
+let fileStoreOptions = {};
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
+    store: new FileStore(fileStoreOptions),
     secret: "secret",
     resave: false,
     saveUninitialized: false,
@@ -28,7 +31,7 @@ const authController = require("./controller/auth_controller");
   
 app.use(ejsLayouts);
 app.use(express.urlencoded({ extended: false }));
-app.use(passport.initialize()); // Tells Server that we want to use Passport 
+app.use(passport.initialize()); 
 app.use(passport.session()); 
 
 // Routes start here
